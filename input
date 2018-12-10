@@ -1,17 +1,2 @@
-11 5
-html
-..head
-....title
-..body
-....h1
-....p #subtitle
-....div #main
-......h2
-......p #one
-......div
-........p #two
-p
-#subtitle
-h3
-div p
-div div p
+10 22 30
+14 12 16 6 10 2 8 20 18 4
