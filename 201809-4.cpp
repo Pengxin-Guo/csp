@@ -11,52 +11,50 @@ using namespace std;
 int n;
 int a[MAX_N + 5];
 int b[MAX_N + 5];
-int vis[MAX_N + 5][300];
+int vis[MAX_N + 5][MAX_N + 5][MAX_N + 5];
 bool flag = false;
 
 void output() {
-    for (int i = 0; i < n; i++) {
-        i == 0 || cout << " ";
+    for (int i = 1; i <= n; i++) {
+        i == 1 || cout << " ";
         cout << a[i];
     }
     cout << endl;
     return ;
 }
 
-void dfs(int num, int ind) {
-    //cout << "ind = " << ind << " num = " << num << endl;
-    if (flag) {
-        return ;
-    }
-    a[ind] = num;
-    if (ind == 1) {
-        if (((a[0] + a[1]) >> 1) != b[0]) return ;
-    }
-    if (ind == n - 1) {
-        if (((a[n - 1] + a[n - 2]) >> 1) == b[n - 1]) {
+void dfs(int i, int cur, int pre) {
+    if (vis[i][cur][pre]) return ;
+    if (flag) return ;
+    vis[i][cur][pre] = 1;
+    a[i] = cur;
+    if (i == n) {
+        if ((a[n - 1] + a[n]) / 2 == b[n]) {
             flag = true;
             output();
         }
         return ;
     }
-    if (ind > 1 && ind < n - 1) {
-        if ((a[ind - 2] + a[ind - 1] + a[ind]) / 3 != b[ind - 1]) return ;
+    int next = 3 * b[i] - pre - cur;
+    for (int k = 0; k < 3; k++) {
+        if (next + k > 0) {
+            dfs(i + 1, next + k, cur);
+        }
     }
-    for (int i = 1; i <= 3 * b[ind]; i++) {
-        if (vis[ind + 1][i]) continue;
-        vis[ind + 1][i] = 1;
-        dfs(i, ind + 1);
-        vis[ind + 1][i] = 0;
-    }
+    return ;
 }
 
 int main() {
     cin >> n;
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i <= n; i++) {
         cin >> b[i];
     }
-    for (int i = 1; i <= 2 * b[0] && !flag; i++) {
-        dfs(i, 0);
+    for (int e = 1; e <= 2 * b[1]; e++) {
+        a[1] = e;
+        // 当a[1]确定下来的时候, a[2]有两种答案: 2 * b[1] - a[1], 2 * b[1] - a[1] + 1;
+        dfs(2, 2 * b[1] - a[1], a[1]);
+        if (!flag) dfs(2, 2 * b[1] - a[1] + 1, a[1]);
+        else break;
     }
     return 0;
 }
